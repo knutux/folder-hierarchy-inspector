@@ -17,6 +17,7 @@ namespace Folder.Hierarchy.Inspector
 
         public IEnumerable<IItem> Children => Array.Empty<IItem>();
 
-        public long DescendantCount => 0;
+        public long FolderCount => 0;
+        public long FileCount => 0;
         }
     }

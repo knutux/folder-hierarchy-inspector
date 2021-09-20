@@ -20,27 +20,43 @@ namespace Folder.Inspector.Tool
             while (true)
                 {
                 Console.Write(@"Select an action:
-  Q - quit");
+  E - re-enumerate
+  Q - quit
+");
                 var key = Console.ReadKey();
 
                 if (key.Key == ConsoleKey.Q || key.Key == ConsoleKey.Escape)
                     break;
 
+                if (key.Key == ConsoleKey.E)
+                    {
+                    Console.Write($"Enumerating the {Inspector.FolderPath}");
+                    FolderHierarchy newHierarchy = Inspector.CreateSnapshot();
+                    PrintHierarchyPreview(newHierarchy, hierarchy);
+                    hierarchy = newHierarchy;
+                    continue;
+                    }
                 }
 
             Console.Write("");
             }
 
-        private void PrintHierarchyPreview(FolderHierarchy hierarchy)
+        private void PrintHierarchyPreview(FolderHierarchy hierarchy, FolderHierarchy? benchmark = null)
             {
             foreach (var child in hierarchy.Children)
                 {
                 var type = child.IsDirectory ? "+" : " ";
-                var size = child.IsDirectory ? $"({child.DescendantCount} children)" : "";
+                var size = child.IsDirectory ? $"({child.FolderCount} folders, {child.FileCount} files)" : "";
                 Console.WriteLine($" {type} {child.Name} {size}");
                 }
 
-            Console.WriteLine($"Total items: {hierarchy.DescendantCount}");
+            var oldFolderCount = benchmark?.FolderCount;
+            var oldFileCount = benchmark?.FileCount;
+            var folderCount = hierarchy.FolderCount;
+            var fileCount = hierarchy.FileCount;
+            var diffFolders = !oldFolderCount.HasValue ? "" : (oldFolderCount == folderCount ? " (no changes)" : (oldFolderCount > folderCount ? $"-{oldFolderCount - folderCount}" : $"+{folderCount - oldFolderCount}"));
+            var diffFiles = !oldFileCount.HasValue ? "" : (oldFileCount == fileCount ? " (no changes)" : (oldFileCount > fileCount ? $" (-{oldFileCount - fileCount})" : $" (+{fileCount - oldFileCount})"));
+            Console.WriteLine($"Total: {folderCount} folders{diffFolders}, {fileCount} files{diffFiles}");
             }
         }
     }

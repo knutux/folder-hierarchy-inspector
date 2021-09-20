@@ -15,7 +15,9 @@ namespace Folder.Hierarchy.Inspector
 
         public IEnumerable<IItem> Children => m_items;
 
-        public long DescendantCount => m_items.Count + m_items.Sum(c => c.DescendantCount);
+        public long FolderCount => m_items.Count(f => f.IsDirectory) + m_items.Sum(c => c.FolderCount);
+
+        public long FileCount => m_items.Count(f => !f.IsDirectory) + m_items.Sum(c => c.FileCount);
 
         public FolderHierarchy(string name) => Name = name;
 

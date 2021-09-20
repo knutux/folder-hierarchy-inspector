@@ -7,6 +7,7 @@ namespace Folder.Hierarchy.Inspector
         string Name { get; }
         bool IsDirectory { get; }
         IEnumerable<IItem> Children { get; }
-        long DescendantCount { get; }
+        long FolderCount { get; }
+        long FileCount { get; }
         }
     }
